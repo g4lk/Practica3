@@ -32,7 +32,17 @@ public class Cliente{
 		this.mes_alta = mes_alta;
 		this.ano_alta = ano_alta;
 		this.compra = new ArrayList<Compra>();
-	}	
+	}
+	public Cliente(String nombre, String apellido, String correo, String dominio, int dia_alta, int mes_alta, int ano_alta){
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.correo = correo;
+		this.dominio = dominio;
+		this.dia_alta = dia_alta;
+		this.mes_alta = mes_alta;
+		this.ano_alta = ano_alta;
+		this.compra = new ArrayList<Compra>();
+	}
 	
 	//Nombre
 	

@@ -11,7 +11,7 @@ public class Tiempo{
 	
 	
 	private int id_tiempo;
-	private int dia_semana;
+	private String dia_semana;
 	private int dia_mes;
 	private String nombre_mes;
 	private int numero_mes;
@@ -23,7 +23,7 @@ public class Tiempo{
 		
 	}
 	
-	public Tiempo(int dia_semana, int dia_mes, String nombre_mes, int numero_mes, int ano, boolean esFinSemana){
+	public Tiempo(String dia_semana, int dia_mes, String nombre_mes, int numero_mes, int ano, boolean esFinSemana){
 		this.dia_semana = dia_semana;
 		this.dia_mes = dia_mes;
 		this.nombre_mes = nombre_mes;
@@ -40,7 +40,7 @@ public class Tiempo{
 		return id_tiempo;
 	}
 
-	public void setDia_semana(int dia_semana) {
+	public void setDia_semana(String dia_semana) {
 		this.dia_semana = dia_semana;
 	}
 
@@ -49,11 +49,11 @@ public class Tiempo{
 	}
 	
 	//Dia semana
-	private void setNombre(int dia_semana){
+	private void setNombre(String dia_semana){
 		this.dia_semana = dia_semana;
 	}
 	
-	private int getDia_semana(){
+	private String getDia_semana(){
 		return this.dia_semana;
 	}
 	
