@@ -54,7 +54,7 @@ public class Compra{
 	//Cliente
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="id_cliente")
-	private Cliente getCliente(){
+	public Cliente getCliente(){
 		return this.cliente;
 	}
 	

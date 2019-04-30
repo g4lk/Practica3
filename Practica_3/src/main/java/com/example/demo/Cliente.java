@@ -120,8 +120,8 @@ public class Cliente {
 		return this.ano_alta;
 	}
 	
-	public String getClave(){
-	    return this.nombre+this.apellido+this.dia_alta+this.mes_alta+this.ano_alta+this.dominio;
+	public String cogerClave(){
+	    return this.nombre+this.apellido+this.dia_alta+this.mes_alta+this.ano_alta;
     }
 
 	//Lista de todas las compras de un usuario
@@ -143,25 +143,12 @@ public class Cliente {
 		return  dia_alta == cliente.dia_alta &&
 				mes_alta == cliente.mes_alta &&
 				ano_alta == cliente.ano_alta &&
-                dominio.equals(cliente.dominio) &&
-                correo.equals(cliente.correo) &&
 				nombre.equals(cliente.nombre) &&
 				apellido.equals(cliente.apellido);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(nombre, apellido, dia_alta, mes_alta, ano_alta,dominio,correo);}
+		return Objects.hash(nombre, apellido, dia_alta, mes_alta, ano_alta);}
 
-
-    public boolean equals2(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cliente cliente = (Cliente) o;
-        return  dia_alta == cliente.dia_alta &&
-                mes_alta == cliente.mes_alta &&
-                ano_alta == cliente.ano_alta &&
-                nombre.equals(cliente.nombre) &&
-                apellido.equals(cliente.apellido);
-    }
 }
