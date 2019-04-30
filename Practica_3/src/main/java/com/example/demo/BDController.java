@@ -353,6 +353,7 @@ public class BDController {
 			boolean  counter = false;
 			br = new BufferedReader(new FileReader(file));
 			String line;
+			
 
 			while ((line = br.readLine()) != null) {
 				if (!counter){
