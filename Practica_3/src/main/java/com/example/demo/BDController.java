@@ -31,11 +31,15 @@ public class BDController {
 	@Autowired
 	private  RepositorioTiempo repositorio_tiempo;
 
-	private Set<Cliente> clientes = new HashSet<>();
+	//Hash nombre apellidos y fecha, con clientes con esos datos :) 
+	private Map<String, ArrayList<Cliente>> clientes = new HashMap<String, ArrayList<Cliente>>();
+	
 	private Set<Compra> compras = new HashSet<>();
 	private Set<Lugar> lugares = new HashSet<>();
 	private Set<Producto> productos = new HashSet<>();
 	private Set<Tiempo> tiempos = new HashSet<>();
+	
+	
 
 	@PostConstruct
 	private void initDatos(){
@@ -53,6 +57,7 @@ public class BDController {
 			for (String[] row : allData) {
 				Cliente c = new Cliente(row[1],row[2],"",row[3],Integer.parseInt(row[4]),monthByName(row[5],"MMMM"),Integer.parseInt(row[6]));
 
+			
                 Compra compra = new Compra(Integer.parseInt(row[10]),Integer.parseInt(row[11]),c);
                 List<Compra> compras_cliente = new ArrayList<Compra>();
                 compras_cliente.add(compra);
@@ -65,10 +70,53 @@ public class BDController {
 
 				String[] dias = row[12].split("/");
 				String dia = dayOfADate(row[12]);
-				Tiempo tiempo = new Tiempo(dia ,Integer.parseInt(dias[0]),monthByNumber(Integer.parseInt(dias[1])),Integer.parseInt(dias[1]),Integer.parseInt(dias[2]),esFinSemana(dia));
+				Tiempo tiempo = new Tiempo(dia, Integer.parseInt(dias[0]), monthByNumber(Integer.parseInt(dias[1])),
+						Integer.parseInt(dias[1]), Integer.parseInt(dias[2]), esFinSemana(dia));
 
-                if (!clientes.contains(c))
-                    clientes.add(c);
+				if (!clientes.containsKey(c.getClave())) {
+					clientes.put(c.getClave(), new ArrayList<Cliente>(Arrays.asList(c)));
+				} else {
+
+					boolean cliente_igual = false;
+					ArrayList<Cliente> lista_cliente = new ArrayList<Cliente>();
+					lista_cliente = clientes.get(c.getClave());
+					for (int i = 0; i < lista_cliente.size() || cliente_igual; i++) {
+						Cliente client = lista_cliente.get(i);
+						if (client.equals(c)) {
+							if (!client.getCorreo().isEmpty() && !c.getCorreo().isEmpty()
+									&& !client.getCorreo().equals(c.getCorreo())) {
+								lista_cliente.add(c);
+								clientes.put(c.getClave(), lista_cliente);
+							} else {
+								if (!client.getDominio().isEmpty() && !c.getDominio().isEmpty()
+										&& !client.getDominio().equals(c.getDominio())) {
+									lista_cliente.add(c);
+									clientes.put(c.getClave(), lista_cliente);
+								} else {
+									if (client.getCorreo().isEmpty() && !c.getCorreo().isEmpty()) {
+										client.setCorreo(c.getCorreo());
+									}
+									if (client.getDominio().isEmpty() && !c.getDominio().isEmpty()) {
+										client.setDominio(c.getDominio());
+									}
+									lista_cliente.set(i, client);
+									clientes.put(c.getClave(), lista_cliente);
+									compra.setCliente(client);
+									cliente_igual = true;
+								}
+
+							}
+
+						} // Fin del if
+					} // Fin del for
+
+					if (!cliente_igual) {
+						lista_cliente.add(c);
+						clientes.put(c.getClave(), lista_cliente);
+					} 
+					
+				}
+
                 if (!lugares.contains(lugar))
                     lugares.add(lugar);
                 if (!productos.contains(producto))
@@ -110,8 +158,52 @@ public class BDController {
 				Tiempo tiempo = new Tiempo(dia ,Integer.parseInt(dias[0]),monthByNumber(Integer.parseInt(dias[1])),
 						Integer.parseInt(dias[1]),Integer.parseInt(dias[2]),esFinSemana(dia));
 
-                if (!clientes.contains(c))
-                    clientes.add(c);
+				if (!clientes.containsKey(c.getClave())) {
+					clientes.put(c.getClave(), new ArrayList<Cliente>(Arrays.asList(c)));
+				} else {
+
+					boolean cliente_igual = false;
+					ArrayList<Cliente> lista_cliente = new ArrayList<Cliente>();
+					lista_cliente = clientes.get(c.getClave());
+					for (int i = 0; i < lista_cliente.size() || cliente_igual; i++) {
+						Cliente client = lista_cliente.get(i);
+						if (client.equals(c)) {
+							if (!client.getCorreo().isEmpty() && !c.getCorreo().isEmpty()
+									&& !client.getCorreo().equals(c.getCorreo())) {
+								lista_cliente.add(c);
+								clientes.put(c.getClave(), lista_cliente);
+							} else {
+								if (!client.getDominio().isEmpty() && !c.getDominio().isEmpty()
+										&& !client.getDominio().equals(c.getDominio())) {
+									lista_cliente.add(c);
+									clientes.put(c.getClave(), lista_cliente);
+								} else {
+									if (client.getCorreo().isEmpty() && !c.getCorreo().isEmpty()) {
+										client.setCorreo(c.getCorreo());
+									}
+									if (client.getDominio().isEmpty() && !c.getDominio().isEmpty()) {
+										client.setDominio(c.getDominio());
+									}
+									lista_cliente.set(i, client);
+									clientes.put(c.getClave(), lista_cliente);
+									compra.setCliente(client);
+									cliente_igual = true;
+								}
+
+							}
+
+						} // Fin del if
+					} // Fin del for
+
+					if (!cliente_igual) {
+						lista_cliente.add(c);
+						clientes.put(c.getClave(), lista_cliente);
+					} 
+					
+				}
+
+				
+				
                 if (!lugares.contains(lugar))
                     lugares.add(lugar);
                 if (!productos.contains(producto))
@@ -151,8 +243,52 @@ public class BDController {
 						Integer.parseInt(dias[1]),Integer.parseInt(dias[2]),esFinSemana(dia));
 
 
-				if (!clientes.contains(c))
-                    clientes.add(c);
+				if (!clientes.containsKey(c.getClave())) {
+					clientes.put(c.getClave(), new ArrayList<Cliente>(Arrays.asList(c)));
+				} else {
+
+					boolean cliente_igual = false;
+					ArrayList<Cliente> lista_cliente = new ArrayList<Cliente>();
+					lista_cliente = clientes.get(c.getClave());
+					for (int i = 0; i < lista_cliente.size() || cliente_igual; i++) {
+						Cliente client = lista_cliente.get(i);
+						if (client.equals(c)) {
+							if (!client.getCorreo().isEmpty() && !c.getCorreo().isEmpty()
+									&& !client.getCorreo().equals(c.getCorreo())) {
+								lista_cliente.add(c);
+								clientes.put(c.getClave(), lista_cliente);
+							} else {
+								if (!client.getDominio().isEmpty() && !c.getDominio().isEmpty()
+										&& !client.getDominio().equals(c.getDominio())) {
+									lista_cliente.add(c);
+									clientes.put(c.getClave(), lista_cliente);
+								} else {
+									if (client.getCorreo().isEmpty() && !c.getCorreo().isEmpty()) {
+										client.setCorreo(c.getCorreo());
+									}
+									if (client.getDominio().isEmpty() && !c.getDominio().isEmpty()) {
+										client.setDominio(c.getDominio());
+									}
+									lista_cliente.set(i, client);
+									clientes.put(c.getClave(), lista_cliente);
+									compra.setCliente(client);
+									cliente_igual = true;
+								}
+
+							}
+
+						} // Fin del if
+					} // Fin del for
+
+					if (!cliente_igual) {
+						lista_cliente.add(c);
+						clientes.put(c.getClave(), lista_cliente);
+					} 
+					
+				}
+
+				
+				
                 if (!lugares.contains(lugar))
                     lugares.add(lugar);
                 if (!productos.contains(producto))
@@ -198,7 +334,11 @@ public class BDController {
 	}
 	// Guarda los objetos en base de datos
 	private void guardarParseos(){
-		repositorio_cliente.saveAll(clientes);
+		List<Cliente> client = new ArrayList<Cliente>();
+		for (List<Cliente> l: clientes.values()) {
+			client.addAll(l);
+		}
+		repositorio_cliente.saveAll(client);
 		repositorio_compra.saveAll(compras);
 		repositorio_lugar.saveAll(lugares);
 		repositorio_producto.saveAll(productos);
@@ -238,7 +378,7 @@ public class BDController {
 	}
     // Elimina duplicados, actualiza referencias
     private void limpiarResultados(){
-        Map<String, Cliente> mapa_clientes = clientes.stream().collect(Collectors.toMap(Cliente::getClave, e -> e));
+        //Map<String, Cliente> mapa_clientes = clientes.stream().collect(Collectors.toMap(Cliente::getClave, e -> e));
 
         //for (Cliente c: compras.iterator().){
 
