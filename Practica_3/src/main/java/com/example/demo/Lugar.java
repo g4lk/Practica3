@@ -1,8 +1,7 @@
 package com.example.demo;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "lugar")
@@ -13,11 +12,16 @@ public class Lugar{
 	private String capital;
 	private String pais;
 	private int num_habitantes;
-	//private List<Compra> compra;
+
 	public Lugar() {
 		
 	}
-	
+
+	public Lugar(String capital, String pais){
+		this.capital = capital;
+		this.pais = pais;
+	}
+
 	public Lugar(String capital, String pais, int num_habitantes){
 		this.capital = capital;
 		this.pais = pais;
@@ -62,14 +66,32 @@ public class Lugar{
 	private int getNum_habitantes(){
 		return this.num_habitantes;
 	}
-	/*
-	//Lista de todas las compras de un lugar
-	@OneToMany (mappedBy = "lugar")
-	public List<Compra> getCompra() {
-		return compra;
+
+	@Override
+	public boolean equals(Object obj){
+
+		// checking if both the object references are
+		// referring to the same object.
+		if(this == obj)
+			return true;
+
+		// it checks if the argument is of the
+		// type Geek by comparing the classes
+		// of the passed argument and this object.
+		// if(!(obj instanceof Geek)) return false; ---> avoid.
+		if(obj == null || obj.getClass()!= this.getClass())
+			return false;
+
+		// type casting of the argument.
+		Lugar l = (Lugar) obj;
+
+		// comparing the state of argument with
+		// the state of 'this' Object.
+		return (l.getCapital().equalsIgnoreCase(this.capital));
 	}
 
-	public void setCompra(List<Compra> compra) {
-		this.compra = compra;
-	}*/
+	@Override
+	public int hashCode() {
+		return Objects.hash(capital);
+	}
 }

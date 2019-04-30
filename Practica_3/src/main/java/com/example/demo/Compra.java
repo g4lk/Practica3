@@ -52,13 +52,13 @@ public class Compra{
 	
 
 	//Cliente
-	@ManyToOne
-	@JoinColumn(name="nombre")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="id_cliente")
 	private Cliente getCliente(){
 		return this.cliente;
 	}
 	
-	private void setCliente(Cliente cliente){
+	public void setCliente(Cliente cliente){
 		this.cliente = cliente;
 	}
 }

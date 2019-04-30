@@ -1,8 +1,7 @@
 package com.example.demo;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "producto")
@@ -48,5 +47,19 @@ public class Producto{
 	
 	private String getDescripcion(){
 		return this.descripcion;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Producto producto = (Producto) o;
+		return nombre.equals(producto.nombre) &&
+				Objects.equals(descripcion, producto.descripcion);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(nombre, descripcion);
 	}
 }

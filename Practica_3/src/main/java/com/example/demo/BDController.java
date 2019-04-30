@@ -1,15 +1,17 @@
 package com.example.demo;
 
-import java.io.BufferedReader;
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.util.*;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class BDController {
@@ -29,29 +31,32 @@ public class BDController {
 	@Autowired
 	private  RepositorioTiempo repositorio_tiempo;
 
-	private List<Cliente> clientes = new ArrayList<>();
-	private List<Compra> compras = new ArrayList<>();
-	private List<Lugar> lugares = new ArrayList<>();
-	private List<Producto> productos = new ArrayList<>();
-	private List<Tiempo> tiempos = new ArrayList<>();
+	private Set<Cliente> clientes = new HashSet<>();
+	private Set<Compra> compras = new HashSet<>();
+	private Set<Lugar> lugares = new HashSet<>();
+	private Set<Producto> productos = new HashSet<>();
+	private Set<Tiempo> tiempos = new HashSet<>();
 
 	@PostConstruct
 	private void initDatos(){
-		parseCsv1();
-		parseCsv2();
 		parseCsv3();
+		parseCsv2();
+		parseCsv1();
+		limpiarResultados();
 		guardarParseos();
 	}
 
 	// Parsea el fichero csv hechos 1 y añade a base de datos
 	private  void parseCsv1() {
-		
 		try { 
 			List<String[]> allData = crearParser("csvs/Practica_3_SSII_hechos1.csv");
 			for (String[] row : allData) {
-				Cliente c = new Cliente(Integer.valueOf(row[0]),row[1],row[2],"",row[3],Integer.valueOf(row[4]),monthByName(row[5]),Integer.valueOf(row[6]));
+				Cliente c = new Cliente(row[1],row[2],"",row[3],Integer.parseInt(row[4]),monthByName(row[5],"MMMM"),Integer.parseInt(row[6]));
 
-				Compra compra = new Compra(Integer.valueOf(row[10]),Integer.valueOf(row[11]),c);
+                Compra compra = new Compra(Integer.parseInt(row[10]),Integer.parseInt(row[11]),c);
+                List<Compra> compras_cliente = new ArrayList<Compra>();
+                compras_cliente.add(compra);
+                c.setCompra(compras_cliente);
 
 				Lugar lugar = new Lugar();
 				lugar.setCapital(row[7]);
@@ -60,13 +65,19 @@ public class BDController {
 
 				String[] dias = row[12].split("/");
 				String dia = dayOfADate(row[12]);
-				Tiempo tiempo = new Tiempo(dia ,Integer.valueOf(dias[0]),monthByNumber(Integer.valueOf(dias[1])),Integer.valueOf(dias[1]),Integer.valueOf(dias[2]),esFinSemana(dia));
+				Tiempo tiempo = new Tiempo(dia ,Integer.parseInt(dias[0]),monthByNumber(Integer.parseInt(dias[1])),Integer.parseInt(dias[1]),Integer.parseInt(dias[2]),esFinSemana(dia));
 
-				clientes.add(c);
-				compras.add(compra);
-				lugares.add(lugar);
-				productos.add(producto);
-				tiempos.add(tiempo);
+                if (!clientes.contains(c))
+                    clientes.add(c);
+                if (!lugares.contains(lugar))
+                    lugares.add(lugar);
+                if (!productos.contains(producto))
+                    productos.add(producto);
+                if (!tiempos.contains(tiempo))
+                    tiempos.add(tiempo);
+                if (!compras.contains(compra))
+                    compras.add(compra);
+
 			}
 		} 
 		catch (Exception e) { 
@@ -83,25 +94,32 @@ public class BDController {
 				String dominio = row[1].substring(row[1].indexOf("@")+1);
 				String[] fechas = row[2].split(" de ");
 				Cliente c = new Cliente(nombre_apellidos[0],nombre_apellidos[1],row[1],dominio,
-						Integer.valueOf(fechas[0]),monthByName(fechas[1]),Integer.valueOf(fechas[2]));
+						Integer.parseInt(fechas[0]),monthByName(fechas[1],"MMMM"),Integer.parseInt(fechas[2]));
 
-				Compra compra = new Compra(Integer.valueOf(row[8]),Integer.valueOf(row[7]),c);
+				Compra compra = new Compra(Integer.parseInt(row[8]),Integer.parseInt(row[7]),c);
+                List<Compra> compras_cliente = new ArrayList<Compra>();
+                compras_cliente.add(compra);
+                c.setCompra(compras_cliente);
 
-				Lugar lugar = new Lugar();
-				lugar.setCapital(row[4]);
+				Lugar lugar = new Lugar(row[4],row[3]);
 
 				Producto producto = new Producto(row[5],row[6]);
 
 				String[] dias = row[9].split("/");
 				String dia = dayOfADate(row[9]);
-				Tiempo tiempo = new Tiempo(dia ,Integer.valueOf(dias[0]),monthByNumber(Integer.valueOf(dias[1])),
-						Integer.valueOf(dias[1]),Integer.valueOf(dias[2]),esFinSemana(dia));
+				Tiempo tiempo = new Tiempo(dia ,Integer.parseInt(dias[0]),monthByNumber(Integer.parseInt(dias[1])),
+						Integer.parseInt(dias[1]),Integer.parseInt(dias[2]),esFinSemana(dia));
 
-				clientes.add(c);
-				compras.add(compra);
-				lugares.add(lugar);
-				productos.add(producto);
-				tiempos.add(tiempo);
+                if (!clientes.contains(c))
+                    clientes.add(c);
+                if (!lugares.contains(lugar))
+                    lugares.add(lugar);
+                if (!productos.contains(producto))
+                    productos.add(producto);
+                if (!tiempos.contains(tiempo))
+                    tiempos.add(tiempo);
+                if (!compras.contains(compra))
+                    compras.add(compra);
 			}
 		}
 		catch (Exception e) {
@@ -116,25 +134,33 @@ public class BDController {
 			for (String[] row : allData) {
 				String[] nombre_apellidos = row[0].split(", ");
 				Cliente c = new Cliente(nombre_apellidos[1],nombre_apellidos[0],"",row[1],
-						Integer.valueOf(row[2]),monthByName3letters(row[3]),Integer.valueOf(row[4]));
+						Integer.parseInt(row[2]),monthByName(row[3],"MMM"),Integer.parseInt(row[4]));
 
-				Compra compra = new Compra(Integer.valueOf(row[10]),Integer.valueOf(row[11]),c);
+				Compra compra = new Compra(Integer.parseInt(row[10]),Integer.parseInt(row[11]),c);
+                List<Compra> compras_cliente = new ArrayList<Compra>();
+                compras_cliente.add(compra);
+                c.setCompra(compras_cliente);
 
-				Lugar lugar = new Lugar();
-				lugar.setCapital(row[6]);
+				Lugar lugar = new Lugar(row[6],row[5],Integer.parseInt(row[7]));
 
 				Producto producto = new Producto(row[8],row[9]);
 
 				String[] dias = row[12].split("/");
 				String dia = dayOfADate(row[12]);
-				Tiempo tiempo = new Tiempo(dia ,Integer.valueOf(dias[0]),monthByNumber(Integer.valueOf(dias[1])),
-						Integer.valueOf(dias[1]),Integer.valueOf(dias[2]),esFinSemana(dia));
+				Tiempo tiempo = new Tiempo(dia ,Integer.parseInt(dias[0]),monthByNumber(Integer.parseInt(dias[1])),
+						Integer.parseInt(dias[1]),Integer.parseInt(dias[2]),esFinSemana(dia));
 
-				clientes.add(c);
-				compras.add(compra);
-				lugares.add(lugar);
-				productos.add(producto);
-				tiempos.add(tiempo);
+
+				if (!clientes.contains(c))
+                    clientes.add(c);
+                if (!lugares.contains(lugar))
+                    lugares.add(lugar);
+                if (!productos.contains(producto))
+                    productos.add(producto);
+                if (!tiempos.contains(tiempo))
+                    tiempos.add(tiempo);
+                if (!compras.contains(compra))
+                    compras.add(compra);
 			}
 		}
 		catch (Exception e) {
@@ -146,30 +172,19 @@ public class BDController {
 	private  String monthByNumber(int month){
 		return new DateFormatSymbols(new Locale("es", "ES")).getMonths()[month-1];
 	}
-	// Dado el nombre completo del mes te devuelve su numero
-	private  int monthByName(String month){
-		Date date = null;
-		try {
-			date = new SimpleDateFormat("MMMM", new Locale("es", "ES")).parse(month);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		Calendar cal = Calendar.getInstance(new Locale("es", "ES"));
-		cal.setTime(date);
-		return cal.get(Calendar.MONTH);
-	}
-	// Dado el nombre abreviado del mes te devuelve su numero
-	private  int monthByName3letters(String month){
+
+	// Dado el nombre y su patron del mes te devuelve su numero
+	private  int monthByName(String month,String pattern){
 		Date date;
 		date = null;
 		try {
-			date = new SimpleDateFormat("MMM", new Locale("es", "ES")).parse(month);
+			date = new SimpleDateFormat(pattern, new Locale("es", "ES")).parse(month);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		Calendar cal = Calendar.getInstance(new Locale("es", "ES"));
 		cal.setTime(date);
-		return cal.get(Calendar.MONTH);
+		return cal.get(Calendar.MONTH)+1;
 	}
 	// Dada una fecha en tipo string te devuelve el nombre del dia en español
 	private  String dayOfADate(String date){
@@ -221,5 +236,14 @@ public class BDController {
 		}
 		return rows;
 	}
+    // Elimina duplicados, actualiza referencias
+    private void limpiarResultados(){
+        Map<String, Cliente> mapa_clientes = clientes.stream().collect(Collectors.toMap(Cliente::getClave, e -> e));
 
+        //for (Cliente c: compras.iterator().){
+
+		//}
+
+
+    }
 }

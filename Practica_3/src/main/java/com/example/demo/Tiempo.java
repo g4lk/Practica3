@@ -1,15 +1,14 @@
 package com.example.demo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tiempo")
 public class Tiempo{
-	
-	
+
+
+
 	private int id_tiempo;
 	private String dia_semana;
 	private int dia_mes;
@@ -17,8 +16,7 @@ public class Tiempo{
 	private int numero_mes;
 	private int ano;
 	private boolean esFinSemana;
-	//private List<Compra> compra;
-	
+
 	public Tiempo() {
 		
 	}
@@ -30,7 +28,6 @@ public class Tiempo{
 		this.numero_mes = numero_mes;
 		this.ano = ano;
 		this.esFinSemana = esFinSemana;
-		//this.compra = new ArrayList<Compra>();
 	}
 	
 	//Id unico de cada tiempo
@@ -101,14 +98,22 @@ public class Tiempo{
 	private boolean getEsFinSemana(){
 		return this.esFinSemana;
 	}
-	/*
-	//Lista de todas las compras de un producto
-	@OneToMany (mappedBy = "producto")
-	public List<Compra> getCompra() {
-		return compra;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Tiempo tiempo = (Tiempo) o;
+		return dia_mes == tiempo.dia_mes &&
+				numero_mes == tiempo.numero_mes &&
+				ano == tiempo.ano &&
+				esFinSemana == tiempo.esFinSemana &&
+				dia_semana.equals(tiempo.dia_semana) &&
+				nombre_mes.equals(tiempo.nombre_mes);
 	}
 
-	public void setCompra(List<Compra> compra) {
-		this.compra = compra;
-	}*/
+	@Override
+	public int hashCode() {
+		return Objects.hash(dia_semana, dia_mes, nombre_mes, numero_mes, ano);
+	}
 }
