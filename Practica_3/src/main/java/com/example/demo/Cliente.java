@@ -121,7 +121,7 @@ public class Cliente {
 	}
 	
 	public String cogerClave(){
-	    return this.nombre+this.apellido+this.dia_alta+this.mes_alta+this.ano_alta;
+	    return this.nombre+this.apellido;
     }
 
 	//Lista de todas las compras de un usuario

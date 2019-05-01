@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +13,8 @@ public class Producto{
 	private int id_producto;
 	private String nombre;
 	private String descripcion;
+	private List<Compra> compra;
+
 	public Producto() {
 		
 	}
@@ -18,6 +22,7 @@ public class Producto{
 	public Producto(String nombre, String descripcion){
 		this.nombre = nombre;
 		this.descripcion = descripcion;
+		this.compra = new ArrayList<>();
 	}
 	
 	//Id unico de cada lugar
@@ -61,5 +66,18 @@ public class Producto{
 	@Override
 	public int hashCode() {
 		return Objects.hash(nombre, descripcion);
+	}
+
+	public String cogerClave(){
+		return this.nombre+this.descripcion;
+	}
+	//Nombre
+	public void setCompra(List<Compra> compra){
+  		this.compra=compra;
+	}
+
+	@OneToMany (mappedBy = "producto")
+	public List<Compra> getCompra(){
+		return this.compra;
 	}
 }

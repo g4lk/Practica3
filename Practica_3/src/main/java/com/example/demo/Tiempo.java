@@ -15,13 +15,13 @@ public class Tiempo{
 	private String nombre_mes;
 	private int numero_mes;
 	private int ano;
-	private boolean esFinSemana;
+	private int esFinSemana;
 
 	public Tiempo() {
 		
 	}
 	
-	public Tiempo(String dia_semana, int dia_mes, String nombre_mes, int numero_mes, int ano, boolean esFinSemana){
+	public Tiempo(String dia_semana, int dia_mes, String nombre_mes, int numero_mes, int ano, int esFinSemana){
 		this.dia_semana = dia_semana;
 		this.dia_mes = dia_mes;
 		this.nombre_mes = nombre_mes;
@@ -91,11 +91,11 @@ public class Tiempo{
 	}
 	
 	//Es fin de semana
-	private void setEsFinSemana(boolean esFinSemana){
+	private void setEsFinSemana(int esFinSemana){
 		this.esFinSemana = esFinSemana;
 	}
 	
-	private boolean getEsFinSemana(){
+	private int getEsFinSemana(){
 		return this.esFinSemana;
 	}
 

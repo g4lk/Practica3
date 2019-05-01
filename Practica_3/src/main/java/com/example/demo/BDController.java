@@ -2,7 +2,6 @@ package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -38,8 +37,8 @@ public class BDController {
 	private Set<Lugar> lugares = new HashSet<>();
 	private Set<Producto> productos = new HashSet<>();
 	private Set<Tiempo> tiempos = new HashSet<>();
-	
-	
+
+
 
 	@PostConstruct
 	private void initDatos(){
@@ -57,16 +56,17 @@ public class BDController {
 			for (String[] row : allData) {
 				Cliente c = new Cliente(row[1],row[2],"",row[3],Integer.parseInt(row[4]),monthByName(row[5],"MMMM"),Integer.parseInt(row[6]));
 
-			
-                Compra compra = new Compra(Integer.parseInt(row[10]),Integer.parseInt(row[11]),c);
+				Producto producto = new Producto(row[8],row[9]);
+                Compra compra = new Compra(Integer.parseInt(row[10]),Integer.parseInt(row[11]),c,producto);
                 List<Compra> compras_cliente = new ArrayList<Compra>();
                 compras_cliente.add(compra);
                 c.setCompra(compras_cliente);
 
+                producto.setCompra(compras_cliente);
 				Lugar lugar = new Lugar();
 				lugar.setCapital(row[7]);
 
-				Producto producto = new Producto(row[8],row[9]);
+
 
 				String[] dias = row[12].split("/");
 				String dia = dayOfADate(row[12]);
@@ -144,14 +144,16 @@ public class BDController {
 				Cliente c = new Cliente(nombre_apellidos[0],nombre_apellidos[1],row[1],dominio,
 						Integer.parseInt(fechas[0]),monthByName(fechas[1],"MMMM"),Integer.parseInt(fechas[2]));
 
-				Compra compra = new Compra(Integer.parseInt(row[8]),Integer.parseInt(row[7]),c);
+				Producto producto = new Producto(row[5],row[6]);
+
+				Compra compra = new Compra(Integer.parseInt(row[8]),Integer.parseInt(row[7]),c,producto);
                 List<Compra> compras_cliente = new ArrayList<Compra>();
                 compras_cliente.add(compra);
                 c.setCompra(compras_cliente);
 
 				Lugar lugar = new Lugar(row[4],row[3]);
 
-				Producto producto = new Producto(row[5],row[6]);
+
 
 				String[] dias = row[9].split("/");
 				String dia = dayOfADate(row[9]);
@@ -228,14 +230,16 @@ public class BDController {
 				Cliente c = new Cliente(nombre_apellidos[1],nombre_apellidos[0],"",row[1],
 						Integer.parseInt(row[2]),monthByName(row[3],"MMM"),Integer.parseInt(row[4]));
 
-				Compra compra = new Compra(Integer.parseInt(row[10]),Integer.parseInt(row[11]),c);
+				Producto producto = new Producto(row[8],row[9]);
+
+				Compra compra = new Compra(Integer.parseInt(row[10]),Integer.parseInt(row[11]),c,producto);
                 List<Compra> compras_cliente = new ArrayList<Compra>();
                 compras_cliente.add(compra);
                 c.setCompra(compras_cliente);
 
 				Lugar lugar = new Lugar(row[6],row[5],Integer.parseInt(row[7]));
 
-				Producto producto = new Producto(row[8],row[9]);
+
 
 				String[] dias = row[12].split("/");
 				String dia = dayOfADate(row[12]);
@@ -327,20 +331,21 @@ public class BDController {
 		return sdf.format(d);
 	}
 	// Comprueba si el día es fin de semana ( sabado o domingo )
-	private  boolean esFinSemana(String dia){
-		return dia.equalsIgnoreCase("sabado") || dia.equalsIgnoreCase("domingo");
+	private  int esFinSemana(String dia){
+		return (dia.equalsIgnoreCase("sábado") || dia.equalsIgnoreCase("domingo"))?1:0;
 	}
 	// Guarda los objetos en base de datos
 	private void guardarParseos(){
-		List<Cliente> client = new ArrayList<Cliente>();
+		List<Cliente> client = new ArrayList<>();
 		for (List<Cliente> l: clientes.values()) {
 			client.addAll(l);
 		}
-		repositorio_cliente.saveAll(client);
 		repositorio_compra.saveAll(compras);
+		repositorio_cliente.saveAll(client);
 		repositorio_lugar.saveAll(lugares);
 		repositorio_producto.saveAll(productos);
 		repositorio_tiempo.saveAll(tiempos);
+
 	}
 	// Devuelve todas las filas de un csv, sin contar el header
 	private List<String[]> crearParser(String file){
@@ -378,16 +383,31 @@ public class BDController {
     // Elimina duplicados, actualiza referencias
     private void limpiarResultados(){
     	Iterator<Compra> it = compras.iterator();
-    	
+		Map<String, Producto> map = productos.stream().collect(Collectors.toMap(Producto::cogerClave, e -> e));
         while(it.hasNext()) {
         	Compra compra = it.next();
-        	List<Cliente> cliente = clientes.get(compra.getCliente().cogerClave());
-        	for (Cliente c: cliente) {
+        	ArrayList<Cliente> cliente = clientes.get(compra.getCliente().cogerClave());
+        	for (int i = 0; i < cliente.size(); i++) {
+        		Cliente c = cliente.get(i);
         		if (c.equals(compra.getCliente())) {
-        			compra.setCliente(c);
+        			Set<Compra> s = new HashSet<>(c.getCompra());
+        			if (!s.contains(compra)){
+        				s.add(compra);
+        				c.setCompra(new ArrayList<>(s));
+					}
+					compra.setCliente(c);
+        			cliente.set(i,c);
+        			clientes.put(c.cogerClave(),cliente);
         		}
         	}
-        	
+
+        	Producto p = map.get(compra.getProducto().cogerClave());
+			Set<Compra> s = new HashSet<>(p.getCompra());
+        	if (!s.contains(compra)){
+				s.add(compra);
+				p.setCompra(new ArrayList<>(s));
+			}
+			compra.setProducto(p);
         }
 
 

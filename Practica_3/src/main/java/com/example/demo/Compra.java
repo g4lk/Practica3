@@ -10,15 +10,17 @@ public class Compra{
 	private int importe;
 	private int valoracion;
 	private Cliente cliente;
+	private Producto producto;
 	
 	public Compra() {
 		
 	}
 	
-	public Compra(int importe, int valoracion, Cliente cliente){
+	public Compra(int importe, int valoracion, Cliente cliente,Producto producto){
 		this.importe = importe;
 		this.valoracion = valoracion;
 		this.cliente = cliente;
+		this.producto = producto;
 	}
 	
 	//Id unico de cada compra
@@ -49,7 +51,16 @@ public class Compra{
 	private int getValoracion(){
 		return this.valoracion;
 	}
-	
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="id_producto")
+	public Producto getProducto(){
+		return this.producto;
+	}
+
+	public void setProducto(Producto producto){
+		this.producto = producto;
+	}
 
 	//Cliente
 	@ManyToOne(cascade = CascadeType.ALL)
