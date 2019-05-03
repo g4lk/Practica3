@@ -18,7 +18,7 @@
 	google.setOnLoadCallback(drawChart);
 	 
 	function drawChart() {
-		 
+		  
 		var data = google.visualization.arrayToDataTable([
 			['importe','id_producto'],
 			<?php 
