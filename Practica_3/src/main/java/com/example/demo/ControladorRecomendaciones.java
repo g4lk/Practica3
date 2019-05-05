@@ -24,6 +24,7 @@ import java.util.List;
 @RestController
 public class ControladorRecomendaciones {
 
+<<<<<<< HEAD
     @Value("${spring.datasource.username}")
     private String user;
     @Value("${spring.datasource.password}")
@@ -31,48 +32,53 @@ public class ControladorRecomendaciones {
 
     @Autowired
     private RepositorioCliente rc;
+=======
+	@Value("${spring.datasource.username}")
+	private String user;
+	@Value("${spring.datasource.password}")
+	private String password;
+	@Autowired
+	private RepositorioCliente rc;
+>>>>>>> 74ae95a7caf153b17e32c346668b9e3c24f96331
 
-    @GetMapping("/recomendaciones/{id}")
-    public List<RecommendedItem> recomendaciones(@PathVariable int id){
+	@GetMapping("/recomendaciones/{id}")
+	public List<RecommendedItem> recomendaciones(@PathVariable int id) {
 
+		List<RecommendedItem> recUsers = new ArrayList<>();
+		UserSimilarity similarity = null;
+		try {
+			MysqlDataSource dataSource = new MysqlDataSource();
 
-        List<RecommendedItem> recUsers = new ArrayList<>();
-        UserSimilarity similarity =
-                null;
-        try {
-            MysqlDataSource dataSource = new MysqlDataSource();
+			dataSource.setServerName("localhost");
+			dataSource.setUser(user);
+			dataSource.setPassword(password);
+			dataSource.setDatabaseName("practica3");
+			dataSource.setServerTimezone("UTC");
+			dataSource.setUseSSL(false);
+			dataSource.setAllowPublicKeyRetrieval(true);
 
-            dataSource.setServerName("localhost");
-            dataSource.setUser(user);
-            dataSource.setPassword(password);
-            dataSource.setDatabaseName("practica3");
-            dataSource.setServerTimezone("UTC");
-            dataSource.setUseSSL(false);
-            dataSource.setAllowPublicKeyRetrieval(true);
+			DataModel model = new ReloadFromJDBCDataModel(
+					new MySQLJDBCDataModel(dataSource, "compra", "id_cliente", "id_producto", "valoracion", null));
 
-            DataModel model = new ReloadFromJDBCDataModel(new MySQLJDBCDataModel(dataSource,"compra","id_cliente","id_producto","valoracion", null));
+			similarity = new PearsonCorrelationSimilarity(model);
+			ThresholdUserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
+			UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
+			recUsers = recommender.recommend(id, 3);
+		} catch (TasteException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return recUsers;
+	}
 
-            similarity = new PearsonCorrelationSimilarity(model);
-        ThresholdUserNeighborhood neighborhood =
-                new ThresholdUserNeighborhood(0.1, similarity, model);
-        UserBasedRecommender recommender =
-                new GenericUserBasedRecommender(model, neighborhood, similarity);
-            recUsers = recommender.recommend(id,3);
-        } catch (TasteException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return recUsers;
-    }
-
-    @GetMapping("/recomendaciones/")
-    public List<List<RecommendedItem>> recomendaciones(){
-        Iterable<Cliente> lc = rc.findAll();
-        List<List<RecommendedItem>> llr = new ArrayList<List<RecommendedItem>>();
-        for (Cliente c : lc){
-            llr.add(recomendaciones(c.getId_cliente()));
-        }
-        return llr;
-    }
+	@GetMapping("/recomendaciones/")
+	public List<List<RecommendedItem>> recomendaciones() {
+		Iterable<Cliente> lc = rc.findAll();
+		List<List<RecommendedItem>> llr = new ArrayList<List<RecommendedItem>>();
+		for (Cliente c : lc) {
+			llr.add(recomendaciones(c.getId_cliente()));
+		}
+		return llr;
+	}
 }
