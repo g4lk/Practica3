@@ -1,27 +1,33 @@
--- MySQL dump 10.13  Distrib 8.0.15, for Linux (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 4.8.5
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: practica3
--- ------------------------------------------------------
--- Server version	8.0.15
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 05-05-2019 a las 19:44:17
+-- Versión del servidor: 10.1.38-MariaDB
+-- Versión de PHP: 7.3.4
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8mb4 ;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Table structure for table `cliente`
+-- Base de datos: `practica3`
 --
 
-DROP TABLE IF EXISTS `cliente`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cliente`
+--
+
 CREATE TABLE `cliente` (
   `id_cliente` int(11) NOT NULL,
   `ano_alta` int(11) NOT NULL,
@@ -30,152 +36,181 @@ CREATE TABLE `cliente` (
   `dia_alta` int(11) NOT NULL,
   `dominio` varchar(255) DEFAULT NULL,
   `mes_alta` int(11) NOT NULL,
-  `nombre` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_cliente`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `nombre` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `cliente`
+-- Estructura de tabla para la tabla `compra`
 --
 
-LOCK TABLES `cliente` WRITE;
-/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `compra`
---
-
-DROP TABLE IF EXISTS `compra`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
 CREATE TABLE `compra` (
   `id_compra` int(11) NOT NULL,
   `importe` int(11) NOT NULL,
   `valoracion` int(11) NOT NULL,
-  `nombre` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_compra`),
-  KEY `FKqry3ekpk0hiprulhkfrmq2cie` (`nombre`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id_cliente` int(11) DEFAULT NULL,
+  `id_producto` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `compra`
+-- Estructura de tabla para la tabla `hibernate_sequence`
 --
 
-LOCK TABLES `compra` WRITE;
-/*!40000 ALTER TABLE `compra` DISABLE KEYS */;
-/*!40000 ALTER TABLE `compra` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `hibernate_sequence`
---
-
-DROP TABLE IF EXISTS `hibernate_sequence`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
 CREATE TABLE `hibernate_sequence` (
   `next_val` bigint(20) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `hibernate_sequence`
+-- Volcado de datos para la tabla `hibernate_sequence`
 --
 
-LOCK TABLES `hibernate_sequence` WRITE;
-/*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (1),(1),(1),(1),(1);
-/*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `hibernate_sequence` (`next_val`) VALUES
+(1),
+(1),
+(1),
+(1),
+(1);
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `lugar`
+-- Estructura de tabla para la tabla `lugar`
 --
 
-DROP TABLE IF EXISTS `lugar`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
 CREATE TABLE `lugar` (
   `id_lugar` int(11) NOT NULL,
   `capital` varchar(255) DEFAULT NULL,
   `num_habitantes` int(11) NOT NULL,
-  `pais` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_lugar`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `pais` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `lugar`
+-- Estructura de tabla para la tabla `producto`
 --
 
-LOCK TABLES `lugar` WRITE;
-/*!40000 ALTER TABLE `lugar` DISABLE KEYS */;
-/*!40000 ALTER TABLE `lugar` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `producto`
---
-
-DROP TABLE IF EXISTS `producto`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
 CREATE TABLE `producto` (
   `id_producto` int(11) NOT NULL,
   `descripcion` varchar(255) DEFAULT NULL,
-  `nombre` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_producto`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `nombre` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `producto`
+-- Estructura de tabla para la tabla `recomendacion`
 --
 
-LOCK TABLES `producto` WRITE;
-/*!40000 ALTER TABLE `producto` DISABLE KEYS */;
-/*!40000 ALTER TABLE `producto` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE `recomendacion` (
+  `id` int(11) NOT NULL,
+  `id_producto` bigint(20) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `valoracion` float NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `tiempo`
+-- Estructura de tabla para la tabla `tiempo`
 --
 
-DROP TABLE IF EXISTS `tiempo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
 CREATE TABLE `tiempo` (
   `id_tiempo` int(11) NOT NULL,
   `ano` int(11) NOT NULL,
   `dia_mes` int(11) NOT NULL,
   `dia_semana` varchar(255) DEFAULT NULL,
-  `es_fin_semana` bit(1) NOT NULL,
+  `es_fin_semana` int(11) NOT NULL,
   `nombre_mes` varchar(255) DEFAULT NULL,
-  `numero_mes` int(11) NOT NULL,
-  PRIMARY KEY (`id_tiempo`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `numero_mes` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `tiempo`
+-- Índices para tablas volcadas
 --
 
-LOCK TABLES `tiempo` WRITE;
-/*!40000 ALTER TABLE `tiempo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tiempo` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+--
+-- Indices de la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  ADD PRIMARY KEY (`id_cliente`);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indices de la tabla `compra`
+--
+ALTER TABLE `compra`
+  ADD PRIMARY KEY (`id_compra`),
+  ADD KEY `FK5ifexv43uefrky9x4l54gvayp` (`id_cliente`),
+  ADD KEY `FK7htj802ek8gvec2d1fpl66l1` (`id_producto`);
+
+--
+-- Indices de la tabla `lugar`
+--
+ALTER TABLE `lugar`
+  ADD PRIMARY KEY (`id_lugar`);
+
+--
+-- Indices de la tabla `producto`
+--
+ALTER TABLE `producto`
+  ADD PRIMARY KEY (`id_producto`);
+
+--
+-- Indices de la tabla `recomendacion`
+--
+ALTER TABLE `recomendacion`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `tiempo`
+--
+ALTER TABLE `tiempo`
+  ADD PRIMARY KEY (`id_tiempo`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `compra`
+--
+ALTER TABLE `compra`
+  MODIFY `id_compra` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `lugar`
+--
+ALTER TABLE `lugar`
+  MODIFY `id_lugar` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `producto`
+--
+ALTER TABLE `producto`
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `recomendacion`
+--
+ALTER TABLE `recomendacion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tiempo`
+--
+ALTER TABLE `tiempo`
+  MODIFY `id_tiempo` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2019-04-25 11:13:35

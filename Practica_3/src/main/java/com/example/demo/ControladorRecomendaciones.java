@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ControladorRecomendaciones {
     private String user;
     @Value("${spring.datasource.password}")
     private String password;
+
     @Autowired
     private RepositorioCliente rc;
 

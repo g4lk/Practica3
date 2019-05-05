@@ -1,11 +1,11 @@
 package com.example.demo;
 
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +22,9 @@ public class BDController {
 	private  RepositorioCompra repositorio_compra;
 
 	@Autowired
+	private  RepositorioRecomendacion repositorio_recomendacion;
+
+	@Autowired
 	private  RepositorioLugar repositorio_lugar;
 	
 	@Autowired
@@ -30,6 +33,8 @@ public class BDController {
 	@Autowired
 	private  RepositorioTiempo repositorio_tiempo;
 
+	@Autowired
+	private ControladorRecomendaciones cr;
 	//Hash nombre apellidos y fecha, con clientes con esos datos :) 
 	private Map<String, ArrayList<Cliente>> clientes = new HashMap<String, ArrayList<Cliente>>();
 	
@@ -47,12 +52,37 @@ public class BDController {
 		parseCsv1();
 		limpiarResultados();
 		guardarParseos();
+		guardarRecomendaciones();
+	}
+	// Genera recomendaciones y las guarda en un fichero
+	private void guardarRecomendaciones(){
+		List<List<RecommendedItem>> llr = cr.recomendaciones();
+		String fileSeparator = System.getProperty("file.separator");
+		String path = "src" + fileSeparator + "main" + fileSeparator + "resources" + fileSeparator + "recomendaciones.csv";
+		File file = new File(path);
+		List<Recomendacion> lista_recomendacion = new ArrayList<>();
+		try {
+			file.createNewFile();
+			FileWriter f2 = new FileWriter(file, false);
+			int i=0;
+			for (List<RecommendedItem> lr : llr){
+				for (RecommendedItem r : lr){
+					lista_recomendacion.add(new Recomendacion(i,r.getValue(),r.getItemID()));
+					f2.write(i + "," + r.getItemID() + ","+ r.getValue() + "\n");
+				}
+				i++;
+			}
+			f2.close();
+			repositorio_recomendacion.saveAll(lista_recomendacion);
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	// Parsea el fichero csv hechos 1 y añade a base de datos
 	private  void parseCsv1() {
 		try { 
-			List<String[]> allData = crearParser("csvs/Practica_3_SSII_hechos1.csv");
+			List<String[]> allData = crearParser("src/main/resources/csvs/Practica_3_SSII_hechos1.csv");
 			for (String[] row : allData) {
 				Cliente c = new Cliente(row[1],row[2],"",row[3],Integer.parseInt(row[4]),monthByName(row[5],"MMMM"),Integer.parseInt(row[6]));
 
@@ -135,7 +165,7 @@ public class BDController {
 	// Parsea el fichero csv hechos 2 y añade a base de datos
 	private  void parseCsv2(){
 		try {
-			List<String[]> allData = crearParser("csvs/Practica_3_SSII_hechos2.csv");
+			List<String[]> allData = crearParser("src/main/resources/csvs/Practica_3_SSII_hechos2.csv");
 
 			for (String[] row : allData) {
 				String[] nombre_apellidos = row[0].split(" ");
@@ -223,7 +253,7 @@ public class BDController {
 	// Parsea el fichero csv hechos 3 y añade a base de datos
 	private  void parseCsv3(){
 		try {
-			List<String[]> allData = crearParser("csvs/Practica_3_SSII_hechos3.csv");
+			List<String[]> allData = crearParser("src/main/resources/csvs/Practica_3_SSII_hechos3.csv");
 
 			for (String[] row : allData) {
 				String[] nombre_apellidos = row[0].split(", ");
