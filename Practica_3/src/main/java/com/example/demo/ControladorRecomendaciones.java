@@ -24,22 +24,13 @@ import java.util.List;
 @RestController
 public class ControladorRecomendaciones {
 
-<<<<<<< HEAD
+
     @Value("${spring.datasource.username}")
     private String user;
     @Value("${spring.datasource.password}")
     private String password;
-
-    @Autowired
-    private RepositorioCliente rc;
-=======
-	@Value("${spring.datasource.username}")
-	private String user;
-	@Value("${spring.datasource.password}")
-	private String password;
 	@Autowired
 	private RepositorioCliente rc;
->>>>>>> 74ae95a7caf153b17e32c346668b9e3c24f96331
 
 	@GetMapping("/recomendaciones/{id}")
 	public List<RecommendedItem> recomendaciones(@PathVariable int id) {
